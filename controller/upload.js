@@ -3,36 +3,54 @@ let Audio = require("../models/audio");
 let User = require("../models/user");
 let Video = require("../models/Videos");
 let Document = require('../models/documents');
-const { disconnect } = require("mongoose");
+
 module.exports.Upload = async (req, res) => {
-  try {
-   let gallery = await Gallery.create({
-      name: req.files.gallery.name,
-    });
+  let name = req.files.gallery.name;
+  let index = name.lastIndexOf('.');
 
-    let user = await User.findById(req.user.id);
-
-    user.Gallery.push(gallery.id);
-    user.save();
-    let path = __dirname + "/../uploads/gallery/" + req.files.gallery.name;
-    let file = req.files;
-    file.gallery.mv(path, (err) => {
+  name = name.substring(0,index) + Date.now() + name.substring(index,name.length);
+  let path = __dirname + "/../uploads/gallery/" + name;
+ 
+ 
+    req.files.gallery.mv(path, async (err) => {
       if (err) {
         console.log(err);
         return res.status(500).send(err);
       }
 
-      return res.send("file uploaded");
+      try{
+        let gallery = await Gallery.create({
+          name
+        });
+    
+        let user = await User.findById(req.user.id);
+    
+        user.Gallery.push(gallery.id);
+        user.save();
+  
+        return res.status(200).send("file uploaded");
+      }catch(err){
+
+        console.log(err);
+        return res.status(500).end("Internal server Error");
+
+      }
+     
     });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).end();
-  }
+  
 };
 
 module.exports.Audio = (req, res) => {
   try {
-    let path = __dirname + "/../uploads/music/" + req.files.music.name;
+    let name = req.files.music.name;
+
+    let index = name.lastIndexOf('.');
+
+
+    name = name.substring(0,index) + Date.now() + name.substring(index,name.length);
+   
+
+    let path = __dirname + "/../uploads/music/"  + name;
     req.files.music.mv(path, async (err) => {
       if (err) {
         console.log(err);
@@ -40,7 +58,7 @@ module.exports.Audio = (req, res) => {
       }
 
       let audio = await Audio.create({
-        name: req.files.music.name,
+        name
       });
 
       let user = await User.findById(req.user.id);
@@ -49,7 +67,7 @@ module.exports.Audio = (req, res) => {
       user.save();
 
       return res.status(200).end();
-    });
+   });
   } catch (err) {
     console.log(err);
     return res.status(501).end();
@@ -58,6 +76,11 @@ module.exports.Audio = (req, res) => {
 
 module.exports.video = async (req, res) => {
   let name = req.files.video.name;
+
+  let index = name.lastIndexOf('.');
+
+
+  name = name.substring(0,index) + Date.now() + name.substring(index,name.length);
   let path = __dirname + "/../uploads/videos/" + name;
 
   try {
@@ -87,6 +110,10 @@ module.exports.video = async (req, res) => {
 module.exports.Document =  (req,res) => {
   try{
     let name = req.files.document.name;
+    let index = name.lastIndexOf('.');
+
+
+    name = name.substring(0,index) + Date.now() + name.substring(index,name.length);
     let path = __dirname + '/../uploads/documents/' + name;
 
     req.files.document.mv(path,async function(err){

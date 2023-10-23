@@ -25,6 +25,13 @@ router.get('/documents',passport.authenticate('jwt',{session : false}),User.Docu
 router.get('/DocumentOne/:name',User.DocumentOne);
 
 
+// deleting content
+
+router.delete('/delete_video',passport.authenticate('jwt',{session : false}),User.Delete_Video);
+
+router.delete('/delete_music',passport.authenticate('jwt',{session : false}),User.Delete_Music);
+
+
 
 
 
