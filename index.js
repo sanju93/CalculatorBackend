@@ -3,8 +3,8 @@ let app = express();
 let fileUpload = require('express-fileupload');
 require('./config/mongoose');
 require('./config/passport_jwt');
-
-let port = 5000;
+require('dotenv').config();
+let port = 5000 || process.env.port;
 app.use(express.json());
 app.use(fileUpload());
 
