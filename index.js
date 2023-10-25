@@ -5,7 +5,7 @@ require('./config/mongoose');
 require('./config/passport_jwt');
 require('dotenv').config();
 let cors = require('cors');
-app.use(cors({origin : "https://vocal-bavarois-6ca22d.netlify.app",optionsSuccessStatus : 200}))
+app.use(cors())
 let port = 5000 || process.env.port;
 app.use(express.json());
 app.use(fileUpload());
